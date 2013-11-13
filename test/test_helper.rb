@@ -34,6 +34,47 @@ def test_response(body, code=200)
   m
 end
 
+def test_test(params={})
+  {
+    id: 2181,
+    created_at: "2013-11-05T04:57:55Z",
+    test_id: 2181,
+    site_id: 860,
+    title: "shit works",
+    result: "no_result",
+    start_uri: "/ghost/signin",
+    run_mode: "default",
+    deleted: false,
+    deletable: true,
+    editable: true,
+    browsers: [
+      {
+        name: "chrome",
+        state: "enabled"
+      },{
+        name: "firefox",
+        state: "enabled"
+      },{
+        name: "ie8",
+        state: "enabled"
+      },{
+        name: "ie9",
+        state: "enabled"
+      },{
+        name: "safari",
+        state: "enabled"
+      }
+    ],
+    tags: [],
+    dry_run_url: "https://fierce-thicket-5713.herokuapp.com/turker/dry_run/L4nI_HqGn6ZT4fvecPmDng?turkSubmitTo=%2Fthanks",
+    last_run: {
+      id: 4244,
+      created_at: "2013-11-13T14:38:01Z",
+      state: "in_progress"
+    }
+  }
+end
+
 def test_balance(params={})
   {
     :pending => [

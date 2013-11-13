@@ -26,6 +26,12 @@ Development
 Test cases can be run with: `bundle exec rake test`
 
 
+Docs
+----
+
+You can find the Rainforest docs here: https://app.rainforestqa.com/docs
+
+
 Examples
 --------
 
