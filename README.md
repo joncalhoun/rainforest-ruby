@@ -51,6 +51,6 @@ run.delete # abort a run
 
 
 # Kick off a run with all tests
-new_run = Rainforest::Run.create(test: ["all"])
+new_run = Rainforest::Run.create(tests: ["all"])
 
 ```
