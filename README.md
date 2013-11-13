@@ -31,7 +31,20 @@ Examples
 
 ```ruby
 require 'rainforest'
-Rainforest.api_key = '...'
+Rainforest.api_key = "985de0ba7d0820912a33aa696a77319d"
 
+# Get all of your tests
+tests = Rainforest::Test.all
+
+
+# Get all of your runs
+runs = Rainforest::Run.all
+
+run = Rainforest::Run.retrieve(2181) # retrieve a run
+run.delete # abort a run
+
+
+# Kick off a run with all tests
+new_run = Rainforest::Run.create(test: ["all"])
 
 ```
