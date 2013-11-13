@@ -22,14 +22,14 @@ module Rainforest
       }
     end
 
-    # TODO(jon): Get rid of the klass and get object set in the responses
-    def self.convert_to_rainforest_object(resp, api_key, klass)
+    # TODO(jon): Suggest an object attribute be returned instead of this.
+    def self.convert_to_rainforest_object(resp, api_key, klass = nil)
       case resp
       when Array
-        resp.map { |i| convert_to_rainforest_object(i, api_key) }
+        resp.map { |i| convert_to_rainforest_object(i, api_key, klass) }
       when Hash
         # Try converting to a known object class.  If none available, fall back to generic RainforestObject
-        object_classes.fetch(resp[:object] || klass, RainforestObject).construct_from(resp, api_key)
+        object_classes.fetch(klass || resp[:object], RainforestObject).construct_from(resp, api_key)
       else
         resp
       end

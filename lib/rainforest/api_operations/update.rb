@@ -11,7 +11,11 @@ module Rainforest
         if values.length > 0
           values.delete(:id)
 
-          response, api_key = Rainforest.request(:post, url, @api_key, values)
+          if self.id
+            response, api_key = Rainforest.request(:put, url + "/#{self.id}", @api_key, values)
+          else
+            response, api_key = Rainforest.request(:post, url, @api_key, values)
+          end
           refresh_from(response, api_key)
         end
         self

@@ -23,6 +23,7 @@ require 'rainforest/api_resource'
 require 'rainforest/singleton_api_resource'
 require 'rainforest/list_object'
 require 'rainforest/test'
+require 'rainforest/run'
 
 # Errors
 require 'rainforest/errors/rainforest_error'
@@ -44,8 +45,6 @@ module Rainforest
   end
 
   def self.api_url(url='')
-    @api_base + "/" + @api_version.to_s + url
-    puts "URL IS: #{@api_base + "/" + @api_version.to_s + url}"
     @api_base + "/" + @api_version.to_s + url
   end
 
