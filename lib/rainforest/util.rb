@@ -18,6 +18,7 @@ module Rainforest
     def self.object_classes
       @object_classes ||= {
         'test' => Test,
+        'run' => Run,
         'list' => ListObject
       }
     end
