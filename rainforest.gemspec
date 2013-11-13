@@ -9,7 +9,7 @@ spec = Gem::Specification.new do |s|
   s.description = 'Rainforest allows you to create tests for your website in plain English, then run them across all major browsers with a single click.  See https://www.rainforestqa.com/ for details.'
   s.authors = ['Jon Calhon']
   s.email = ['joncalhoun@gmail.com']
-  s.homepage = 'https://app.rainforestqa.com/docs/ruby'
+  s.homepage = 'https://github.com/joncalhoun/rainforest-ruby'
 
   s.add_dependency('rest-client', '~> 1.4')
   s.add_dependency('multi_json', '>= 1.0.4', '< 2')
