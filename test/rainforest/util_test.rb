@@ -1,7 +1,7 @@
 require File.expand_path('../../test_helper', __FILE__)
 
 module Rainforest
-  class UtilTest < Test::Unit::TestCase
+  class UtilTest < ::Test::Unit::TestCase
     should "symbolize_names should convert names to symbols" do
       start = {
         'foo' => 'bar',

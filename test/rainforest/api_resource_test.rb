@@ -2,344 +2,344 @@
 require File.expand_path('../../test_helper', __FILE__)
 
 module Rainforest
-  class ApiResourceTest < Test::Unit::TestCase
+  class ApiResourceTest < ::Test::Unit::TestCase
     should "creating a new APIResource should not fetch over the network" do
       @mock.expects(:get).never
-      c = Rainforest::Customer.new("someid")
+      c = Rainforest::Test.new("someid")
     end
 
-    should "creating a new APIResource from a hash should not fetch over the network" do
-      @mock.expects(:get).never
-      c = Rainforest::Customer.construct_from({
-        :id => "somecustomer",
-        :card => {:id => "somecard", :object => "card"},
-        :object => "customer"
-      })
-    end
+  #   should "creating a new APIResource from a hash should not fetch over the network" do
+  #     @mock.expects(:get).never
+  #     c = Rainforest::Test.construct_from({
+  #       :id => "somecustomer",
+  #       :card => {:id => "somecard", :object => "card"},
+  #       :object => "customer"
+  #     })
+  #   end
 
-    should "setting an attribute should not cause a network request" do
-      @mock.expects(:get).never
-      @mock.expects(:post).never
-      c = Rainforest::Customer.new("test_customer");
-      c.card = {:id => "somecard", :object => "card"}
-    end
+  #   should "setting an attribute should not cause a network request" do
+  #     @mock.expects(:get).never
+  #     @mock.expects(:post).never
+  #     c = Rainforest::Test.new("test_customer");
+  #     c.card = {:id => "somecard", :object => "card"}
+  #   end
 
-    should "accessing id should not issue a fetch" do
-      @mock.expects(:get).never
-      c = Rainforest::Customer.new("test_customer");
-      c.id
-    end
+  #   should "accessing id should not issue a fetch" do
+  #     @mock.expects(:get).never
+  #     c = Rainforest::Test.new("test_customer");
+  #     c.id
+  #   end
 
-    should "not specifying api credentials should raise an exception" do
-      Rainforest.api_key = nil
-      assert_raises Rainforest::AuthenticationError do
-        Rainforest::Customer.new("test_customer").refresh
-      end
-    end
+  #   should "not specifying api credentials should raise an exception" do
+  #     Rainforest.api_key = nil
+  #     assert_raises Rainforest::AuthenticationError do
+  #       Rainforest::Test.new("test_customer").refresh
+  #     end
+  #   end
 
-    should "specifying api credentials containing whitespace should raise an exception" do
-      Rainforest.api_key = "key "
-      assert_raises Rainforest::AuthenticationError do
-        Rainforest::Customer.new("test_customer").refresh
-      end
-    end
+  #   should "specifying api credentials containing whitespace should raise an exception" do
+  #     Rainforest.api_key = "key "
+  #     assert_raises Rainforest::AuthenticationError do
+  #       Rainforest::Test.new("test_customer").refresh
+  #     end
+  #   end
 
-    should "specifying invalid api credentials should raise an exception" do
-      Rainforest.api_key = "invalid"
-      response = test_response(test_invalid_api_key_error, 401)
-      assert_raises Rainforest::AuthenticationError do
-        @mock.expects(:get).once.raises(RestClient::ExceptionWithResponse.new(response, 401))
-        Rainforest::Customer.retrieve("failing_customer")
-      end
-    end
+  #   should "specifying invalid api credentials should raise an exception" do
+  #     Rainforest.api_key = "invalid"
+  #     response = test_response(test_invalid_api_key_error, 401)
+  #     assert_raises Rainforest::AuthenticationError do
+  #       @mock.expects(:get).once.raises(RestClient::ExceptionWithResponse.new(response, 401))
+  #       Rainforest::Test.retrieve("failing_customer")
+  #     end
+  #   end
 
-    should "AuthenticationErrors should have an http status, http body, and JSON body" do
-      Rainforest.api_key = "invalid"
-      response = test_response(test_invalid_api_key_error, 401)
-      begin
-        @mock.expects(:get).once.raises(RestClient::ExceptionWithResponse.new(response, 401))
-        Rainforest::Customer.retrieve("failing_customer")
-      rescue Rainforest::AuthenticationError => e
-        assert_equal(401, e.http_status)
-        assert_equal(true, !!e.http_body)
-        assert_equal(true, !!e.json_body[:error][:message])
-        assert_equal(test_invalid_api_key_error['error']['message'], e.json_body[:error][:message])
-      end
-    end
+  #   should "AuthenticationErrors should have an http status, http body, and JSON body" do
+  #     Rainforest.api_key = "invalid"
+  #     response = test_response(test_invalid_api_key_error, 401)
+  #     begin
+  #       @mock.expects(:get).once.raises(RestClient::ExceptionWithResponse.new(response, 401))
+  #       Rainforest::Test.retrieve("failing_customer")
+  #     rescue Rainforest::AuthenticationError => e
+  #       assert_equal(401, e.http_status)
+  #       assert_equal(true, !!e.http_body)
+  #       assert_equal(true, !!e.json_body[:error][:message])
+  #       assert_equal(test_invalid_api_key_error['error']['message'], e.json_body[:error][:message])
+  #     end
+  #   end
 
-    context "when specifying per-object credentials" do
-      context "with no global API key set" do
-        should "use the per-object credential when creating" do
-          Rainforest.expects(:execute_request).with do |opts|
-            opts[:headers][:authorization] == 'Bearer sk_test_local'
-          end.returns(test_response(test_charge))
+  #   context "when specifying per-object credentials" do
+  #     context "with no global API key set" do
+  #       should "use the per-object credential when creating" do
+  #         Rainforest.expects(:execute_request).with do |opts|
+  #           opts[:headers][:authorization] == 'Bearer sk_test_local'
+  #         end.returns(test_response(test_charge))
 
-          Rainforest::Charge.create({:card => {:number => '4242424242424242'}},
-            'sk_test_local')
-        end
-      end
+  #         Rainforest::Test.create({:card => {:number => '4242424242424242'}},
+  #           'sk_test_local')
+  #       end
+  #     end
 
-      context "with a global API key set" do
-        setup do
-          Rainforest.api_key = "global"
-        end
+  #     context "with a global API key set" do
+  #       setup do
+  #         Rainforest.api_key = "global"
+  #       end
 
-        teardown do
-          Rainforest.api_key = nil
-        end
+  #       teardown do
+  #         Rainforest.api_key = nil
+  #       end
 
-        should "use the per-object credential when creating" do
-          Rainforest.expects(:execute_request).with do |opts|
-            opts[:headers][:authorization] == 'Bearer local'
-          end.returns(test_response(test_charge))
+  #       should "use the per-object credential when creating" do
+  #         Rainforest.expects(:execute_request).with do |opts|
+  #           opts[:headers][:authorization] == 'Bearer local'
+  #         end.returns(test_response(test_charge))
 
-          Rainforest::Charge.create({:card => {:number => '4242424242424242'}},
-            'local')
-        end
+  #         Rainforest::Test.create({:card => {:number => '4242424242424242'}},
+  #           'local')
+  #       end
 
-        should "use the per-object credential when retrieving and making other calls" do
-          Rainforest.expects(:execute_request).with do |opts|
-            opts[:url] == "#{Rainforest.api_base}/v1/charges/ch_test_charge" &&
-              opts[:headers][:authorization] == 'Bearer local'
-          end.returns(test_response(test_charge))
-          Rainforest.expects(:execute_request).with do |opts|
-            opts[:url] == "#{Rainforest.api_base}/v1/charges/ch_test_charge/refund" &&
-              opts[:headers][:authorization] == 'Bearer local'
-          end.returns(test_response(test_charge))
+  #       should "use the per-object credential when retrieving and making other calls" do
+  #         Rainforest.expects(:execute_request).with do |opts|
+  #           opts[:url] == "#{Rainforest.api_base}/v1/charges/ch_test_charge" &&
+  #             opts[:headers][:authorization] == 'Bearer local'
+  #         end.returns(test_response(test_charge))
+  #         Rainforest.expects(:execute_request).with do |opts|
+  #           opts[:url] == "#{Rainforest.api_base}/v1/charges/ch_test_charge/refund" &&
+  #             opts[:headers][:authorization] == 'Bearer local'
+  #         end.returns(test_response(test_charge))
 
-          ch = Rainforest::Charge.retrieve('ch_test_charge', 'local')
-          ch.refund
-        end
-      end
-    end
+  #         ch = Rainforest::Test.retrieve('ch_test_charge', 'local')
+  #         ch.refund
+  #       end
+  #     end
+  #   end
 
-    context "with valid credentials" do
-      should "urlencode values in GET params" do
-        response = test_response(test_charge_array)
-        @mock.expects(:get).with("#{Rainforest.api_base}/v1/charges?customer=test%20customer", nil, nil).returns(response)
-        charges = Rainforest::Charge.all(:customer => 'test customer').data
-        assert charges.kind_of? Array
-      end
+  #   context "with valid credentials" do
+  #     should "urlencode values in GET params" do
+  #       response = test_response(test_charge_array)
+  #       @mock.expects(:get).with("#{Rainforest.api_base}/v1/charges?customer=test%20customer", nil, nil).returns(response)
+  #       charges = Rainforest::Test.all(:customer => 'test customer').data
+  #       assert charges.kind_of? Array
+  #     end
 
-      should "construct URL properly with base query parameters" do
-        response = test_response(test_invoice_customer_array)
-        @mock.expects(:get).with("#{Rainforest.api_base}/v1/invoices?customer=test_customer", nil, nil).returns(response)
-        invoices = Rainforest::Invoice.all(:customer => 'test_customer')
+  #     should "construct URL properly with base query parameters" do
+  #       response = test_response(test_invoice_customer_array)
+  #       @mock.expects(:get).with("#{Rainforest.api_base}/v1/invoices?customer=test_customer", nil, nil).returns(response)
+  #       invoices = Rainforest::Invoice.all(:customer => 'test_customer')
 
-        @mock.expects(:get).with("#{Rainforest.api_base}/v1/invoices?customer=test_customer&paid=true", nil, nil).returns(response)
-        invoices.all(:paid => true)
-      end
+  #       @mock.expects(:get).with("#{Rainforest.api_base}/v1/invoices?customer=test_customer&paid=true", nil, nil).returns(response)
+  #       invoices.all(:paid => true)
+  #     end
 
-      should "a 400 should give an InvalidRequestError with http status, body, and JSON body" do
-        response = test_response(test_missing_id_error, 400)
-        @mock.expects(:get).once.raises(RestClient::ExceptionWithResponse.new(response, 404))
-        begin
-          Rainforest::Customer.retrieve("foo")
-        rescue Rainforest::InvalidRequestError => e
-          assert_equal(400, e.http_status)
-          assert_equal(true, !!e.http_body)
-          assert_equal(true, e.json_body.kind_of?(Hash))
-        end
-      end
+  #     should "a 400 should give an InvalidRequestError with http status, body, and JSON body" do
+  #       response = test_response(test_missing_id_error, 400)
+  #       @mock.expects(:get).once.raises(RestClient::ExceptionWithResponse.new(response, 404))
+  #       begin
+  #         Rainforest::Test.retrieve("foo")
+  #       rescue Rainforest::InvalidRequestError => e
+  #         assert_equal(400, e.http_status)
+  #         assert_equal(true, !!e.http_body)
+  #         assert_equal(true, e.json_body.kind_of?(Hash))
+  #       end
+  #     end
 
-      should "a 401 should give an AuthenticationError with http status, body, and JSON body" do
-        response = test_response(test_missing_id_error, 401)
-        @mock.expects(:get).once.raises(RestClient::ExceptionWithResponse.new(response, 404))
-        begin
-          Rainforest::Customer.retrieve("foo")
-        rescue Rainforest::AuthenticationError => e
-          assert_equal(401, e.http_status)
-          assert_equal(true, !!e.http_body)
-          assert_equal(true, e.json_body.kind_of?(Hash))
-        end
-      end
+  #     should "a 401 should give an AuthenticationError with http status, body, and JSON body" do
+  #       response = test_response(test_missing_id_error, 401)
+  #       @mock.expects(:get).once.raises(RestClient::ExceptionWithResponse.new(response, 404))
+  #       begin
+  #         Rainforest::Test.retrieve("foo")
+  #       rescue Rainforest::AuthenticationError => e
+  #         assert_equal(401, e.http_status)
+  #         assert_equal(true, !!e.http_body)
+  #         assert_equal(true, e.json_body.kind_of?(Hash))
+  #       end
+  #     end
 
-      should "a 402 should give a CardError with http status, body, and JSON body" do
-        response = test_response(test_missing_id_error, 402)
-        @mock.expects(:get).once.raises(RestClient::ExceptionWithResponse.new(response, 404))
-        begin
-          Rainforest::Customer.retrieve("foo")
-        rescue Rainforest::CardError => e
-          assert_equal(402, e.http_status)
-          assert_equal(true, !!e.http_body)
-          assert_equal(true, e.json_body.kind_of?(Hash))
-        end
-      end
+  #     should "a 402 should give a CardError with http status, body, and JSON body" do
+  #       response = test_response(test_missing_id_error, 402)
+  #       @mock.expects(:get).once.raises(RestClient::ExceptionWithResponse.new(response, 404))
+  #       begin
+  #         Rainforest::Test.retrieve("foo")
+  #       rescue Rainforest::CardError => e
+  #         assert_equal(402, e.http_status)
+  #         assert_equal(true, !!e.http_body)
+  #         assert_equal(true, e.json_body.kind_of?(Hash))
+  #       end
+  #     end
 
-      should "a 404 should give an InvalidRequestError with http status, body, and JSON body" do
-        response = test_response(test_missing_id_error, 404)
-        @mock.expects(:get).once.raises(RestClient::ExceptionWithResponse.new(response, 404))
-        begin
-          Rainforest::Customer.retrieve("foo")
-        rescue Rainforest::InvalidRequestError => e
-          assert_equal(404, e.http_status)
-          assert_equal(true, !!e.http_body)
-          assert_equal(true, e.json_body.kind_of?(Hash))
-        end
-      end
+  #     should "a 404 should give an InvalidRequestError with http status, body, and JSON body" do
+  #       response = test_response(test_missing_id_error, 404)
+  #       @mock.expects(:get).once.raises(RestClient::ExceptionWithResponse.new(response, 404))
+  #       begin
+  #         Rainforest::Test.retrieve("foo")
+  #       rescue Rainforest::InvalidRequestError => e
+  #         assert_equal(404, e.http_status)
+  #         assert_equal(true, !!e.http_body)
+  #         assert_equal(true, e.json_body.kind_of?(Hash))
+  #       end
+  #     end
 
-      should "setting a nil value for a param should exclude that param from the request" do
-        @mock.expects(:get).with do |url, api_key, params|
-          uri = URI(url)
-          query = CGI.parse(uri.query)
-          (url =~ %r{^#{Rainforest.api_base}/v1/charges?} &&
-           query.keys.sort == ['offset', 'sad'])
-        end.returns(test_response({ :count => 1, :data => [test_charge] }))
-        c = Rainforest::Charge.all(:count => nil, :offset => 5, :sad => false)
+  #     should "setting a nil value for a param should exclude that param from the request" do
+  #       @mock.expects(:get).with do |url, api_key, params|
+  #         uri = URI(url)
+  #         query = CGI.parse(uri.query)
+  #         (url =~ %r{^#{Rainforest.api_base}/v1/charges?} &&
+  #          query.keys.sort == ['offset', 'sad'])
+  #       end.returns(test_response({ :count => 1, :data => [test_charge] }))
+  #       c = Rainforest::Test.all(:count => nil, :offset => 5, :sad => false)
 
-        @mock.expects(:post).with do |url, api_key, params|
-          url == "#{Rainforest.api_base}/v1/charges" &&
-            api_key.nil? &&
-            CGI.parse(params) == { 'amount' => ['50'], 'currency' => ['usd'] }
-        end.returns(test_response({ :count => 1, :data => [test_charge] }))
-        c = Rainforest::Charge.create(:amount => 50, :currency => 'usd', :card => { :number => nil })
-      end
+  #       @mock.expects(:post).with do |url, api_key, params|
+  #         url == "#{Rainforest.api_base}/v1/charges" &&
+  #           api_key.nil? &&
+  #           CGI.parse(params) == { 'amount' => ['50'], 'currency' => ['usd'] }
+  #       end.returns(test_response({ :count => 1, :data => [test_charge] }))
+  #       c = Rainforest::Test.create(:amount => 50, :currency => 'usd', :card => { :number => nil })
+  #     end
 
-      should "requesting with a unicode ID should result in a request" do
-        response = test_response(test_missing_id_error, 404)
-        @mock.expects(:get).once.with("#{Rainforest.api_base}/v1/customers/%E2%98%83", nil, nil).raises(RestClient::ExceptionWithResponse.new(response, 404))
-        c = Rainforest::Customer.new("☃")
-        assert_raises(Rainforest::InvalidRequestError) { c.refresh }
-      end
+  #     should "requesting with a unicode ID should result in a request" do
+  #       response = test_response(test_missing_id_error, 404)
+  #       @mock.expects(:get).once.with("#{Rainforest.api_base}/v1/customers/%E2%98%83", nil, nil).raises(RestClient::ExceptionWithResponse.new(response, 404))
+  #       c = Rainforest::Test.new("☃")
+  #       assert_raises(Rainforest::InvalidRequestError) { c.refresh }
+  #     end
 
-      should "requesting with no ID should result in an InvalidRequestError with no request" do
-        c = Rainforest::Customer.new
-        assert_raises(Rainforest::InvalidRequestError) { c.refresh }
-      end
+  #     should "requesting with no ID should result in an InvalidRequestError with no request" do
+  #       c = Rainforest::Test.new
+  #       assert_raises(Rainforest::InvalidRequestError) { c.refresh }
+  #     end
 
-      should "making a GET request with parameters should have a query string and no body" do
-        params = { :limit => 1 }
-        @mock.expects(:get).once.with("#{Rainforest.api_base}/v1/charges?limit=1", nil, nil).returns(test_response([test_charge]))
-        c = Rainforest::Charge.all(params)
-      end
+  #     should "making a GET request with parameters should have a query string and no body" do
+  #       params = { :limit => 1 }
+  #       @mock.expects(:get).once.with("#{Rainforest.api_base}/v1/charges?limit=1", nil, nil).returns(test_response([test_charge]))
+  #       c = Rainforest::Test.all(params)
+  #     end
 
-      should "making a POST request with parameters should have a body and no query string" do
-        params = { :amount => 100, :currency => 'usd', :card => 'sc_token' }
-        @mock.expects(:post).once.with do |url, get, post|
-          get.nil? && CGI.parse(post) == {'amount' => ['100'], 'currency' => ['usd'], 'card' => ['sc_token']}
-        end.returns(test_response(test_charge))
-        c = Rainforest::Charge.create(params)
-      end
+  #     should "making a POST request with parameters should have a body and no query string" do
+  #       params = { :amount => 100, :currency => 'usd', :card => 'sc_token' }
+  #       @mock.expects(:post).once.with do |url, get, post|
+  #         get.nil? && CGI.parse(post) == {'amount' => ['100'], 'currency' => ['usd'], 'card' => ['sc_token']}
+  #       end.returns(test_response(test_charge))
+  #       c = Rainforest::Test.create(params)
+  #     end
 
-      should "loading an object should issue a GET request" do
-        @mock.expects(:get).once.returns(test_response(test_customer))
-        c = Rainforest::Customer.new("test_customer")
-        c.refresh
-      end
+  #     should "loading an object should issue a GET request" do
+  #       @mock.expects(:get).once.returns(test_response(test_customer))
+  #       c = Rainforest::Test.new("test_customer")
+  #       c.refresh
+  #     end
 
-      should "using array accessors should be the same as the method interface" do
-        @mock.expects(:get).once.returns(test_response(test_customer))
-        c = Rainforest::Customer.new("test_customer")
-        c.refresh
-        assert_equal c.created, c[:created]
-        assert_equal c.created, c['created']
-        c['created'] = 12345
-        assert_equal c.created, 12345
-      end
+  #     should "using array accessors should be the same as the method interface" do
+  #       @mock.expects(:get).once.returns(test_response(test_customer))
+  #       c = Rainforest::Test.new("test_customer")
+  #       c.refresh
+  #       assert_equal c.created, c[:created]
+  #       assert_equal c.created, c['created']
+  #       c['created'] = 12345
+  #       assert_equal c.created, 12345
+  #     end
 
-      should "accessing a property other than id or parent on an unfetched object should fetch it" do
-        @mock.expects(:get).once.returns(test_response(test_customer))
-        c = Rainforest::Customer.new("test_customer")
-        c.charges
-      end
+  #     should "accessing a property other than id or parent on an unfetched object should fetch it" do
+  #       @mock.expects(:get).once.returns(test_response(test_customer))
+  #       c = Rainforest::Test.new("test_customer")
+  #       c.charges
+  #     end
 
-      should "updating an object should issue a POST request with only the changed properties" do
-        @mock.expects(:post).with do |url, api_key, params|
-          url == "#{Rainforest.api_base}/v1/customers/c_test_customer" && api_key.nil? && CGI.parse(params) == {'description' => ['another_mn']}
-        end.once.returns(test_response(test_customer))
-        c = Rainforest::Customer.construct_from(test_customer)
-        c.description = "another_mn"
-        c.save
-      end
+  #     should "updating an object should issue a POST request with only the changed properties" do
+  #       @mock.expects(:post).with do |url, api_key, params|
+  #         url == "#{Rainforest.api_base}/v1/customers/c_test_customer" && api_key.nil? && CGI.parse(params) == {'description' => ['another_mn']}
+  #       end.once.returns(test_response(test_customer))
+  #       c = Rainforest::Test.construct_from(test_customer)
+  #       c.description = "another_mn"
+  #       c.save
+  #     end
 
-      should "updating should merge in returned properties" do
-        @mock.expects(:post).once.returns(test_response(test_customer))
-        c = Rainforest::Customer.new("c_test_customer")
-        c.description = "another_mn"
-        c.save
-        assert_equal false, c.livemode
-      end
+  #     should "updating should merge in returned properties" do
+  #       @mock.expects(:post).once.returns(test_response(test_customer))
+  #       c = Rainforest::Test.new("c_test_customer")
+  #       c.description = "another_mn"
+  #       c.save
+  #       assert_equal false, c.livemode
+  #     end
 
-      should "deleting should send no props and result in an object that has no props other deleted" do
-        @mock.expects(:get).never
-        @mock.expects(:post).never
-        @mock.expects(:delete).with("#{Rainforest.api_base}/v1/customers/c_test_customer", nil, nil).once.returns(test_response({ "id" => "test_customer", "deleted" => true }))
+  #     should "deleting should send no props and result in an object that has no props other deleted" do
+  #       @mock.expects(:get).never
+  #       @mock.expects(:post).never
+  #       @mock.expects(:delete).with("#{Rainforest.api_base}/v1/customers/c_test_customer", nil, nil).once.returns(test_response({ "id" => "test_customer", "deleted" => true }))
 
-        c = Rainforest::Customer.construct_from(test_customer)
-        c.delete
-        assert_equal true, c.deleted
+  #       c = Rainforest::Test.construct_from(test_customer)
+  #       c.delete
+  #       assert_equal true, c.deleted
 
-        assert_raises NoMethodError do
-          c.livemode
-        end
-      end
+  #       assert_raises NoMethodError do
+  #         c.livemode
+  #       end
+  #     end
 
-      should "loading an object with properties that have specific types should instantiate those classes" do
-        @mock.expects(:get).once.returns(test_response(test_charge))
-        c = Rainforest::Charge.retrieve("test_charge")
-        assert c.card.kind_of?(Rainforest::RainforestObject) && c.card.object == 'card'
-      end
+  #     should "loading an object with properties that have specific types should instantiate those classes" do
+  #       @mock.expects(:get).once.returns(test_response(test_charge))
+  #       c = Rainforest::Test.retrieve("test_charge")
+  #       assert c.card.kind_of?(Rainforest::RainforestObject) && c.card.object == 'card'
+  #     end
 
-      should "loading all of an APIResource should return an array of recursively instantiated objects" do
-        @mock.expects(:get).once.returns(test_response(test_charge_array))
-        c = Rainforest::Charge.all.data
-        assert c.kind_of? Array
-        assert c[0].kind_of? Rainforest::Charge
-        assert c[0].card.kind_of?(Rainforest::RainforestObject) && c[0].card.object == 'card'
-      end
+  #     should "loading all of an APIResource should return an array of recursively instantiated objects" do
+  #       @mock.expects(:get).once.returns(test_response(test_charge_array))
+  #       c = Rainforest::Test.all.data
+  #       assert c.kind_of? Array
+  #       assert c[0].kind_of? Rainforest::Test
+  #       assert c[0].card.kind_of?(Rainforest::RainforestObject) && c[0].card.object == 'card'
+  #     end
 
-      context "error checking" do
+  #     context "error checking" do
 
-        should "404s should raise an InvalidRequestError" do
-          response = test_response(test_missing_id_error, 404)
-          @mock.expects(:get).once.raises(RestClient::ExceptionWithResponse.new(response, 404))
+  #       should "404s should raise an InvalidRequestError" do
+  #         response = test_response(test_missing_id_error, 404)
+  #         @mock.expects(:get).once.raises(RestClient::ExceptionWithResponse.new(response, 404))
 
-          begin
-            Rainforest::Customer.new("test_customer").refresh
-            assert false #shouldn't get here either
-          rescue Rainforest::InvalidRequestError => e # we don't use assert_raises because we want to examine e
-            assert e.kind_of? Rainforest::InvalidRequestError
-            assert_equal "id", e.param
-            assert_equal "Missing id", e.message
-            return
-          end
+  #         begin
+  #           Rainforest::Test.new("test_customer").refresh
+  #           assert false #shouldn't get here either
+  #         rescue Rainforest::InvalidRequestError => e # we don't use assert_raises because we want to examine e
+  #           assert e.kind_of? Rainforest::InvalidRequestError
+  #           assert_equal "id", e.param
+  #           assert_equal "Missing id", e.message
+  #           return
+  #         end
 
-          assert false #shouldn't get here
-        end
+  #         assert false #shouldn't get here
+  #       end
 
-        should "5XXs should raise an APIError" do
-          response = test_response(test_api_error, 500)
-          @mock.expects(:get).once.raises(RestClient::ExceptionWithResponse.new(response, 500))
+  #       should "5XXs should raise an APIError" do
+  #         response = test_response(test_api_error, 500)
+  #         @mock.expects(:get).once.raises(RestClient::ExceptionWithResponse.new(response, 500))
 
-          begin
-            Rainforest::Customer.new("test_customer").refresh
-            assert false #shouldn't get here either
-          rescue Rainforest::APIError => e # we don't use assert_raises because we want to examine e
-            assert e.kind_of? Rainforest::APIError
-            return
-          end
+  #         begin
+  #           Rainforest::Test.new("test_customer").refresh
+  #           assert false #shouldn't get here either
+  #         rescue Rainforest::APIError => e # we don't use assert_raises because we want to examine e
+  #           assert e.kind_of? Rainforest::APIError
+  #           return
+  #         end
 
-          assert false #shouldn't get here
-        end
+  #         assert false #shouldn't get here
+  #       end
 
-        should "402s should raise a CardError" do
-          response = test_response(test_invalid_exp_year_error, 402)
-          @mock.expects(:get).once.raises(RestClient::ExceptionWithResponse.new(response, 402))
+  #       should "402s should raise a CardError" do
+  #         response = test_response(test_invalid_exp_year_error, 402)
+  #         @mock.expects(:get).once.raises(RestClient::ExceptionWithResponse.new(response, 402))
 
-          begin
-            Rainforest::Customer.new("test_customer").refresh
-            assert false #shouldn't get here either
-          rescue Rainforest::CardError => e # we don't use assert_raises because we want to examine e
-            assert e.kind_of? Rainforest::CardError
-            assert_equal "invalid_expiry_year", e.code
-            assert_equal "exp_year", e.param
-            assert_equal "Your card's expiration year is invalid", e.message
-            return
-          end
+  #         begin
+  #           Rainforest::Test.new("test_customer").refresh
+  #           assert false #shouldn't get here either
+  #         rescue Rainforest::CardError => e # we don't use assert_raises because we want to examine e
+  #           assert e.kind_of? Rainforest::CardError
+  #           assert_equal "invalid_expiry_year", e.code
+  #           assert_equal "exp_year", e.param
+  #           assert_equal "Your card's expiration year is invalid", e.message
+  #           return
+  #         end
 
-          assert false #shouldn't get here
-        end
-      end
-    end
-  end
+  #         assert false #shouldn't get here
+  #       end
+  #     end
+  #   end
+  # end
 end
