@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/rainforestapp/rainforest-ruby.png?branch=master)](https://travis-ci.org/rainforestapp/rainforest-ruby)
+
 # Installation
 
 Install the gem:
