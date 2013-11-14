@@ -6,7 +6,7 @@ module Rainforest
     context "With a valid api token, any request" do
       should "not raise an exception" do
         response = test_response({}, 200)
-        @mock.expects(:get).once.(response)
+        @mock.expects(:get).once.returns(response)
         Rainforest::Test.retrieve("1")
       end
     end
