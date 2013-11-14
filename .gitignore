@@ -3,3 +3,5 @@
 .rvmrc
 Gemfile.lock
 tags
+.DS_Store
+*~

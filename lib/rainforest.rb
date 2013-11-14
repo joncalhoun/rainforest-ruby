@@ -22,7 +22,6 @@ require 'rainforest/rainforest_object'
 require 'rainforest/api_resource'
 require 'rainforest/singleton_api_resource'
 require 'rainforest/list_object'
-require 'rainforest/test'
 require 'rainforest/run'
 
 # Errors

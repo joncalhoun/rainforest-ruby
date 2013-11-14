@@ -7,7 +7,7 @@ module Rainforest
       should "not raise an exception" do
         response = test_response({}, 200)
         @mock.expects(:get).once.returns(response)
-        Rainforest::Test.retrieve("1")
+        Rainforest::Run.retrieve("1")
       end
     end
 
@@ -16,7 +16,7 @@ module Rainforest
         response = test_response({error:"Authentication required"}, 401)
         assert_raises AuthenticationError do
           @mock.expects(:get).once.raises(RestClient::ExceptionWithResponse.new(response, 401))
-          Rainforest::Test.retrieve("1")
+          Rainforest::Run.retrieve("1")
         end
       end
     end
