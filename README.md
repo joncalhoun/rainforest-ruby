@@ -1,5 +1,4 @@
-Installation
-------------
+# Installation
 
 Install the gem:
 
@@ -9,31 +8,17 @@ gem install rainforest
 
 Import the Rainforest client in your application:
 
-```
+```ruby
 require 'rainforest'
 ```
 
-Requirements
-------------
+# Requirements
 
-* Ruby 1.8.7 or above. (Ruby 1.8.6 may work if you load
-  ActiveSupport.)
+* Ruby 1.9.3 or above.
 * rest-client, multi_json
 
-Development
------------
 
-Test cases can be run with: `bundle exec rake test`
-
-
-Docs
-----
-
-You can find the Rainforest docs here: https://app.rainforestqa.com/docs
-
-
-Examples
---------
+# Examples
 
 ```ruby
 require 'rainforest'
@@ -52,5 +37,13 @@ run.delete # abort a run
 
 # Kick off a run with all tests
 new_run = Rainforest::Run.create(tests: ["all"])
-
 ```
+
+# Docs
+
+You can find the Rainforest docs here: https://docs.rainforestqa.com/
+
+
+# Development
+
+Test cases can be run with: `bundle exec rake test`
