@@ -26,10 +26,6 @@ require 'rainforest'
 require 'rainforest'
 Rainforest.api_key = "985de0ba7d0820912a33aa696a77319d"
 
-# Get all of your tests
-tests = Rainforest::Test.all
-
-
 # Get all of your runs
 runs = Rainforest::Run.all
 
