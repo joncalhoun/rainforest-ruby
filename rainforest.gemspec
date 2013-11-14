@@ -10,6 +10,7 @@ spec = Gem::Specification.new do |s|
   s.authors = ['Jon Calhon']
   s.email = ['joncalhoun@gmail.com']
   s.homepage = 'https://github.com/joncalhoun/rainforest-ruby'
+  s.license = 'MIT'
 
   s.add_dependency('rest-client', '~> 1.4')
   s.add_dependency('multi_json', '>= 1.0.4', '< 2')
