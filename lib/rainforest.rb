@@ -215,8 +215,6 @@ module Rainforest
       raise invalid_request_error error, rcode, rbody, error_obj
     when 401
       raise authentication_error error, rcode, rbody, error_obj
-    when 402
-      raise card_error error, rcode, rbody, error_obj
     else
       raise api_error error, rcode, rbody, error_obj
     end
@@ -224,17 +222,12 @@ module Rainforest
   end
 
   def self.invalid_request_error(error, rcode, rbody, error_obj)
-    InvalidRequestError.new(error[:message], error[:param], rcode,
+    InvalidRequestError.new("Invalid Request Error", error[:param], rcode,
                             rbody, error_obj)
   end
 
   def self.authentication_error(error, rcode, rbody, error_obj)
-    AuthenticationError.new(error[:message], rcode, rbody, error_obj)
-  end
-
-  def self.card_error(error, rcode, rbody, error_obj)
-    CardError.new(error[:message], error[:param], error[:code],
-                  rcode, rbody, error_obj)
+    AuthenticationError.new("Authentication Error", rcode, rbody, error_obj)
   end
 
   def self.api_error(error, rcode, rbody, error_obj)
