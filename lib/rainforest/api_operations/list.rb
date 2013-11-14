@@ -4,9 +4,7 @@ module Rainforest
       module ClassMethods
         def all(filters={}, api_key=nil)
           response, api_key = Rainforest.request(:get, url, api_key, filters)
-
-          # TODO(jon): Suggest an object attribute be returned instead of this.
-          Util.convert_to_rainforest_object(response, api_key, class_name.downcase)
+          Util.convert_to_rainforest_object(response, api_key)
         end
       end
 

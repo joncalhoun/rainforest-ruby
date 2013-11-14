@@ -37,6 +37,7 @@ end
 def test_test(params={})
   {
     id: 2181,
+    object: "Test",
     created_at: "2013-11-05T04:57:55Z",
     test_id: 2181,
     site_id: 860,
@@ -72,12 +73,13 @@ def test_test(params={})
       created_at: "2013-11-13T14:38:01Z",
       state: "in_progress"
     }
-  }
+  }.merge(params)
 end
 
 def test_run(params={})
   {
     id: 4244,
+    object: "Run",
     created_at: "2013-11-13T14:38:01Z",
     environment_id: 1144,
     test_count: 1,
@@ -128,7 +130,7 @@ def test_run(params={})
       }
     ],
     requested_tests: [2181]
-  }
+  }.merge(params)
 end
 
 def test_run_array
