@@ -182,7 +182,6 @@ module Rainforest
   end
 
   def self.parse(response)
-    puts response.body
     begin
       # Would use :symbolize_names => true, but apparently there is
       # some library out there that makes symbolize_names not work.
