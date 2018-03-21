@@ -12,7 +12,7 @@ spec = Gem::Specification.new do |s|
   s.homepage = 'https://github.com/joncalhoun/rainforest-ruby'
   s.license = 'MIT'
 
-  s.add_dependency('rest-client', '~> 1.4')
+  s.add_dependency('rest-client', '>= 1.4')
   s.add_dependency('multi_json', '>= 1.0.4', '< 2')
 
   s.add_development_dependency('mocha', '~> 0.13.2')
